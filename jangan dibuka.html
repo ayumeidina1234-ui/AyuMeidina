@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesan Rahasiaku 💌</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top left, #f9c5d1, #9795ef);
+    color: #fff;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .fade {
+    animation: fadeIn 1.2s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    padding: 25px 30px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+  }
+
+  h1 {
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  textarea {
+    width: 100%;
+    height: 120px;
+    border-radius: 10px;
+    border: none;
+    padding: 10px;
+    resize: none;
+    outline: none;
+    font-size: 15px;
+    font-family: inherit;
+  }
+
+  button {
+    background: linear-gradient(45deg, #ff7eb3, #ff758c);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    color: #fff;
+    font-weight: 600;
+    margin: 10px 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(255,118,150,0.5);
+  }
+
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255,118,150,0.8);
+  }
+
+  .hidden { display: none; }
+
+  #output {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 15px;
+    word-wrap: break-word;
+    min-height: 60px;
+  }
+
+  /* Animasi Partikel */
+  .particle {
+    position: absolute;
+    background: rgba(255,255,255,0.8);
+    border-radius: 50%;
+    animation: floatUp 8s linear infinite;
+  }
+
+  @keyframes floatUp {
+    from { transform: translateY(100vh) scale(0.5); opacity: 1; }
+    to { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="mainMenu" class="container fade">
+  <h1>💖 Pesan Rahasiaku 💖</h1>
+  <button onclick="showPage('encodePage')">Buat Pesan Rahasia 💌</button>
+  <button onclick="showPage('decodePage')">Terjemahkan Pesan Rahasia 🔐</button>
+</div>
+
+<div id="encodePage" class="container hidden fade">
+  <h1>✨ Buat Pesan Rahasia ✨</h1>
+  <textarea id="plainText" placeholder="Tulis pesan romantismu di sini..."></textarea>
+  <button onclick="encodeMessage()">Buat Kode 💫</button>
+  <button onclick="backToMenu()">Kembali 🔙</button>
+  <div id="encodedOutput" class="hidden">
+    <h3>Kode Rahasiamu:</h3>
+    <div id="output"></div>
+    <button onclick="copyCode()">📋 Salin Kode</button>
+  </div>
+</div>
+
+<div id="decodePage" class="container hidden fade">
+  <h1>💞 Terjemahkan Pesan Rahasia 💞</h1>
+  <textarea id="encodedText" placeholder="Tempelkan kode rahasia di sini..."></textarea>
+  <button onclick="decodeMessage()">Terjemahkan 💖</button>
+  <button onclick="backToMenu()">Kembali 🔙</button>
+  <div id="decodedOutput" class="hidden">
+    <h3>Pesan Asli:</h3>
+    <div id="outputDecoded"></div>
+  </div>
+</div>
+
+<script>
+  // Navigasi antar halaman
+  function showPage(pageId) {
+    document.getElementById('mainMenu').classList.add('hidden');
+    document.getElementById(pageId).classList.remove('hidden');
+  }
+
+  function backToMenu() {
+    document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
+    document.getElementById('mainMenu').classList.remove('hidden');
+  }
+
+  // Encode dan Decode sederhana (Base64)
+  function encodeMessage() {
+    const text = document.getElementById('plainText').value.trim();
+    if (!text) return alert("Tuliskan pesan terlebih dahulu ya 💕");
+    const encoded = btoa(unescape(encodeURIComponent(text)));
+    document.getElementById('output').innerText = encoded;
+    document.getElementById('encodedOutput').classList.remove('hidden');
+  }
+
+  function decodeMessage() {
+    const text = document.getElementById('encodedText').value.trim();
+    if (!text) return alert("Masukkan kode rahasia terlebih dahulu 😳");
+    try {
+      const decoded = decodeURIComponent(escape(atob(text)));
+      document.getElementById('outputDecoded').innerText = decoded;
+      document.getElementById('decodedOutput').classList.remove('hidden');
+    } catch {
+      alert("Kode tidak valid 💔");
+    }
+  }
+
+  // Fitur salin kode
+  function copyCode() {
+    const code = document.getElementById('output').innerText;
+    navigator.clipboard.writeText(code);
+    alert("Kode berhasil disalin ke clipboard 💘");
+  }
+
+  // Partikel animasi
+  const body = document.body;
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.classList.add('particle');
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.width = p.style.height = Math.random() * 6 + 4 + 'px';
+    p.style.animationDelay = Math.random() * 8 + 's';
+    body.appendChild(p);
+  }
+</script>
+</body>
+</html>
